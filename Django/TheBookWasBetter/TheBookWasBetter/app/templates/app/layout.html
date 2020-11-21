@@ -10,32 +10,17 @@
     <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
 </head>
 
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header justify-">
-                {#<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>#}
-                <a href="/" class="navbar-brand">The Book Was Better</a>
-            </div>
-            <!--<div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="{% url 'home' %}">Home</a></li>
-                    <li><a href="{% url 'about' %}">About</a></li>
-                    <li><a href="{% url 'contact' %}">Contact</a></li>
-                </ul>-->
-            <!--</div>-->
-        </div>
-    </div>
+<body class="pt-0">
+    <nav class="navbar navbar-dark bg-primary mb-5">
+  <!-- Navbar content -->
+        <a class="navbar-brand mx-auto" href="/">The Book Was Better</a>
+    </nav>
 
-    <div class="container body-content">
 {% block content %}{% endblock %}
+    <div class="container body-content">
         <hr/>
         <footer>
-            <p>&copy; {{ year }} - My Django Application</p>
+            <p>&copy; TadaSkience - {{ year }}</p>
         </footer>
     </div>
 

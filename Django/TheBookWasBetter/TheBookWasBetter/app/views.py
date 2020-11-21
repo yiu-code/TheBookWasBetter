@@ -18,6 +18,19 @@ def home(request):
         }
     )
 
+def detail(request):
+    """Renders the detail page."""
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'app/detail.html',
+        {
+            'title':'Details',
+            'message':'Your contact page.',
+            'year':datetime.now().year,
+        }
+    )
+
 def contact(request):
     """Renders the contact page."""
     assert isinstance(request, HttpRequest)

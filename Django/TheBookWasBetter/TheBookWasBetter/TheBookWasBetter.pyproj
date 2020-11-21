@@ -5,6 +5,7 @@
     <Name>TheBookWasBetter</Name>
     <RootNamespace>TheBookWasBetter</RootNamespace>
     <InterpreterId>CondaEnv|CondaEnv|Minor</InterpreterId>
+    <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -56,6 +57,7 @@
     <Folder Include="TheBookWasBetter\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\templates\app\detail.html" />
     <Content Include="requirements.txt" />
     <Content Include="db.sqlite3" />
     <Content Include="app\static\app\content\bootstrap.css" />
