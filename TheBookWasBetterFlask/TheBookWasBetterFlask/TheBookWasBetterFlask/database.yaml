@@ -1,0 +1,1 @@
+uri: 'postgresql://localhost/bookisbetter?user=postgres&password=admin'
