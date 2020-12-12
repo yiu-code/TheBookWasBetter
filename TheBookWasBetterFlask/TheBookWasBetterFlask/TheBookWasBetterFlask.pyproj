@@ -79,6 +79,7 @@
     <Content Include="TheBookWasBetterFlask\static\scripts\respond.min.js" />
     <Content Include="TheBookWasBetterFlask\static\scripts\_references.js" />
     <Content Include="TheBookWasBetterFlask\templates\bookpage.html" />
+    <Content Include="TheBookWasBetterFlask\templates\bookoverviewpage.html" />
     <Content Include="TheBookWasBetterFlask\templates\index.html" />
     <Content Include="TheBookWasBetterFlask\templates\layout.html" />
   </ItemGroup>

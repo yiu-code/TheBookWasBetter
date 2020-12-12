@@ -16,5 +16,9 @@
 <p>{{book.categories}}</p>
 
 
+{% for sim in sim_books %}
+<a href="{{ url_for('bookdetail', book_id=sim.book_id) }}">{{sim.title}}</a>
+{% endfor %}
+
 
 {% endblock %}

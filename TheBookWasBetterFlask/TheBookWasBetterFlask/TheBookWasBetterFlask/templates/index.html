@@ -1,39 +1,37 @@
-{% extends "layout.html" %}
+﻿{% extends "layout.html" %}
 
 {% block content %}
+<section class="index-section">
+    <h2 class="index-section-title">Latest books</h2>
+    <div class="flex-grid ">
+        {% for book in newest_books %}
+        <a class="flex-row" href="{{ url_for('bookdetail', book_id=book.book_id) }}">
+            <div class="card-image-wrapper">
+                <img class="card-image" src={{ book.image_url }} alt="Card image cap">
+            </div>
+            <div class="card-body-wrapper">
+                <p class="card-text">{{ book.title }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
 
-<div class="flex-grid ">
-    {% for book in books.items %}
-    <a class="flex-row" href="{{ url_for('bookdetail', book_id=book.book_id) }}">
-        <div class="card-image-wrapper">
-            <img class="card-image" src={{ book.image_url }} alt="Card image cap">
-        </div>
-        <div class="card-body-wrapper">
-            <p class="card-text">{{ book.title }}</p>
-        </div>
-    </a>
-    {% endfor %}
+<section class="index-section">
+    <h2 class="index-section-title">Best rated books</h2>
+    <div class="flex-grid ">
+        {% for book in best_rated_books %}
+        <a class="flex-row" href="{{ url_for('bookdetail', book_id=book.book_id) }}">
+            <div class="card-image-wrapper">
+                <img class="card-image" src={{ book.image_url }} alt="Card image cap">
+            </div>
+            <div class="card-body-wrapper">
+                <p class="card-text">{{ book.title }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
 
-</div>
-
-{% if books.has_prev %}<a href="{{ url_for('index', page=books.prev_num) }}">&lt;&lt; Newer books</a>{% else %}&lt;&lt; Newer books{% endif %} |
-{% if books.has_next %}<a href="{{ url_for('index', page=books.next_num) }}">Older books &gt;&gt;</a>{% else %}Older books &gt;&gt;{% endif %}
-
-
-<!--<nav aria-label="...">
-    <ul class="pagination">
-        <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-        </li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item" aria-current="page">
-            <a class="page-link" href="#">2</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-            <a class="page-link" href="#">Next</a>
-        </li>
-    </ul>
-</nav>-->
 
 {% endblock %}
