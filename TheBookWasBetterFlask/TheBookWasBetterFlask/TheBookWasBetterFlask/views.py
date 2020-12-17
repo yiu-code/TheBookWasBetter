@@ -8,7 +8,7 @@ from TheBookWasBetterFlask import app, db
 from .models.book import Book
 from .models.author import Author
 from .models.descriptionSimilarity import DescriptionSimilarity
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 from flask_sqlalchemy import SQLAlchemy
 from  sqlalchemy.sql.expression import func
 from sqlalchemy import text
@@ -60,44 +60,44 @@ def book(page=1):
         books = books
     )
 
-@app.route("/book/<book_id>")
+@app.route("/book/<book_id>",  methods=['GET', 'POST'])
 def bookdetail(book_id):
-    book = Book.query.filter_by(book_id = book_id).first()
-    sim_desc = DescriptionSimilarity.query.filter_by(book_id = book_id)\
-                                    .order_by(DescriptionSimilarity.cosine.desc())\
-                                    .with_entities(DescriptionSimilarity.similar_book)\
-                                    .all()
-    sim_desc = [r for r, in sim_desc] 
+    if request.form:
+        try:
+            recommended_book = DescriptionSimilarity.query.filter_by(book_id = request.form.get("book_id"), similar_book = request.form.get("sim_id")).first()
+            if recommended_book.user_feed != -10 or  recommended_book.user_feed != 10:
+                if "dislike" in request.form:
+                      recommended_book.user_feed -= 1
+                elif "like" in request.form:
+                      recommended_book.user_feed += 1
+            recommended_book.last_modified = datetime.now()
+            db.session.commit() 
+        except Exception as e:
+            print("could not update book")
+            print(e)
+        return redirect(request.referrer)
+    else:
+        book = Book.query.filter_by(book_id = book_id).first()
+        authors = [ int(b["author_id"]) for b in book.authors]
 
-    sim_books = Book.query.filter(Book.book_id.in_(sim_desc))\
-                          .with_entities(Book.book_id,Book.title, Book.image_url)\
-                          .all()
+        authors = Author.query.filter(Author.author_id.in_(authors)).all() 
 
-    print(sim_books)
-    return render_template(
-        'bookpage.html',
-        title='Book Detail Page',
-        year=datetime.now().year,
-        book = book,
-        sim_books = sim_books,
+        sim_desc = DescriptionSimilarity.query.filter_by(book_id = book_id)\
+                                        .order_by(DescriptionSimilarity.cosine.desc())\
+                                        .limit(15)
+        id_list = [b.similar_book for b in sim_desc]
+
+        sim_books = Book.query.filter(Book.book_id.in_(id_list))\
+                              .with_entities(Book.book_id,Book.title, Book.image_url)\
+                              .limit(15)
+
+        sim_books = [next(s for s in sim_books if s.book_id == id) for id in id_list]
+
+        return render_template(
+            'bookpage.html',
+            title='Book Detail Page',
+            year=datetime.now().year,
+            book = book,
+            authors = authors,
+            similar_books = zip(sim_desc,sim_books) 
     )
-
-#@app.route('/contact')
-#def contact():
-#    """Renders the contact page."""
-#    return render_template(
-#        'contact.html',
-#        title='Contact',
-#        year=datetime.now().year,
-#        message='Your contact page.'
-#    )
-
-#@app.route('/about')
-#def about():
-#    """Renders the about page."""
-#    return render_template(
-#        'about.html',
-#        title='About',
-#        year=datetime.now().year,
-#        message='Your application description page.'
-#    )

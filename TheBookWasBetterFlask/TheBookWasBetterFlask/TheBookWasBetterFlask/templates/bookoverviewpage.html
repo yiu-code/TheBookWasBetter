@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="flex-grid ">
+<div class="flex-grid">
     {% for book in books.items %}
     <a class="flex-row" href="{{ url_for('bookdetail', book_id=book.book_id) }}">
         <div class="card-image-wrapper">
