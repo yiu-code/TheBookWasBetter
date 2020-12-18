@@ -1,0 +1,37 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+<section class="index-section">
+    <h2 class="index-section-title">Latest books</h2>
+    <div class="flex-grid ">
+        {% for book in newest_books %}
+        <a class="flex-row" href="{{ url_for('bookdetail', book_id=book.book_id) }}">
+            <div class="card-image-wrapper">
+                <img class="card-image" src={{ book.image_url }} alt="Card image cap">
+            </div>
+            <div class="card-body-wrapper">
+                <p class="card-text">{{ book.title }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="index-section">
+    <h2 class="index-section-title">Best rated books</h2>
+    <div class="flex-grid ">
+        {% for book in best_rated_books %}
+        <a class="flex-row" href="{{ url_for('bookdetail', book_id=book.book_id) }}">
+            <div class="card-image-wrapper">
+                <img class="card-image" src={{ book.image_url }} alt="Card image cap">
+            </div>
+            <div class="card-body-wrapper">
+                <p class="card-text">{{ book.title }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+
+{% endblock %}

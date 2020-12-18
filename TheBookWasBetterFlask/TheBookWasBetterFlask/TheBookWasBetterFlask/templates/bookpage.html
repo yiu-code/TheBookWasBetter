@@ -1,0 +1,90 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12 col-md-3">
+        <img class="detail-page-image" src={{ book.image_url }} alt="Card image cap">
+    </div>
+    <div class="row col-sm-12 col-md-9">
+        <div class="detail-intro-wrapper">
+            <h2>{{book.title}}</h2>
+            <p><small>Average rating: {{book.average_rating}}</small></p>
+            <p>{{book.description}}</p>
+        </div>
+    </div>
+</div>
+
+<div class="book-detail-section ">
+    <h3>Book details</h3>
+    <div class="row">
+        <div class="book-detail-wrapper col-sm-12 col-md-3">
+            <p><strong>ISBN:</strong> {{book.isbn}}</p>
+            <p><strong>ISBN13:</strong> {{book.isbn13}}</p>
+            <p><strong>ASIN:</strong> {{book.asin}}</p>
+            <p><strong>Publication year:</strong> {{book.publication_year}}</p>
+        </div>
+        <div class="book-detail-wrapper col-sm-3">
+            <div class="row .book-detail-list-wrapper">
+                <div col-6>
+                    <div>
+                        <p><strong>Categories:&nbsp;</strong> </p>
+                    </div>
+                </div>
+                <div col-6>
+                    {% for category in book.categories%}
+                    <p>{{category}} </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="book-detail-wrapper col-sm-6">
+            <div class="row .book-detail-list-wrapper">
+                <div col-6>
+                    <div>
+                        <p><strong>Author(s):&nbsp;</strong></p>
+                    </div>
+                </div>
+                <div col-6>
+                    <div class="book-detail-authors">
+                        {% for author in authors%}
+                        {{author.name}}{{ ", " if not loop.last }}
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="book-detail-section ">
+    <h3>Similar books</h3>
+    <div class="flex-grid">
+        {% for sim_desc, sim_books in similar_books %}
+        <div class="flex-row" >
+            <a href="{{ url_for('bookdetail', book_id=sim_books.book_id) }}">
+                <div class="card-image-wrapper">
+                    <img class="card-image" src={{ sim_books.image_url }} alt="Card image cap">
+                </div>
+                <div class="card-body-wrapper">
+                    <p class="card-text">{{ sim_books.title }}</p>
+                </div>
+            </a>
+            <p><small>cosine: {{sim_desc.cosine + (sim_desc.user_feed / 100)}} </small></p>
+            <div class="similar-book-button">
+                <form method="POST" action="./{{book.book_id}}" style="display: inline">
+                    <input type="hidden" value="{{book.book_id}}" name="book_id">
+                    <input type="hidden" value="{{sim_desc.similar_book}}" name="sim_id">
+                    <input class="btn btn-info" name="like" type="submit" value="Like">
+                    <input class="btn btn-dark" name="dislike" type="submit" value="Dislike">
+                </form>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+
+</div>
+
+
+{% endblock %}
