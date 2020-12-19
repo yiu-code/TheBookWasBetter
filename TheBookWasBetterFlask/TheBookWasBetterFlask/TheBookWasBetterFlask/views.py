@@ -23,6 +23,15 @@ import json
 #    db.session.add(DescriptionSimilarity(**post_dict))
 #    db.session.commit()
 
+books = Book.query.order_by(Book.book_id)\
+                    .with_entities(Book.book_id,Book.title, Book.image_url)
+
+unique_categories_query = Book.query.with_entities(Book.categories)\
+                        .distinct(Book.categories)\
+                        .order_by(Book.categories)
+
+# Turn result to list, unnest list and remove duplicate values. I got no clue how to get unique values from a array column through SQLalchemy :/
+unique_categories = set(sum([row for row, in unique_categories_query], []))
 
 @app.route('/')
 @app.route('/home')
@@ -39,25 +48,34 @@ def index():
 
     return render_template(
         'index.html',
-        title='Home Page',
-        year=datetime.now().year,
+        title = 'Home Page',
+        year = datetime.now().year,
         newest_books = newest_books,
         best_rated_books = best_rated_books
     ) 
 
-@app.route('/browse', methods=['GET'], defaults={"page": 1}) 
+@app.route('/browse', methods=['GET', 'POST'], defaults={"page": 1}) 
 @app.route('/browse/<int:page>', methods=['GET'])
 def book(page=1):
-    per_page = 100
-    books = Book.query.order_by(Book.book_id)\
-                      .with_entities(Book.book_id,Book.title, Book.image_url)\
-                      .paginate(page,per_page,error_out=False)
+    global books
+    global unique_categories
 
+    filtered_books = books
+    for data in request.form:
+        if (data == "Toepassen"):
+            break
+
+        filtered_books = books.filter(Book.categories.any(data))
+
+    per_page = 100
+
+    paginated_books = filtered_books.paginate(page,per_page,error_out=False)
     return render_template(
         'bookoverviewpage.html',
-        title='Book Overview Page',
-        year=datetime.now().year,
-        books = books
+        title = 'Book Overview Page',
+        year = datetime.now().year,
+        books = paginated_books,
+        categories = unique_categories,
     )
 
 @app.route("/book/<book_id>",  methods=['GET', 'POST'])
@@ -95,8 +113,8 @@ def bookdetail(book_id):
 
         return render_template(
             'bookpage.html',
-            title='Book Detail Page',
-            year=datetime.now().year,
+            title = 'Book Detail Page',
+            year = datetime.now().year,
             book = book,
             authors = authors,
             similar_books = zip(sim_desc,sim_books) 
