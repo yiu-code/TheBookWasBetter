@@ -30,16 +30,18 @@ unique_categories_query = Book.query.with_entities(Book.categories)\
                         .distinct(Book.categories)\
                         .order_by(Book.categories)
 
+newest_books = Book.query.filter_by(publication_year = datetime.now().year)\
+                    .order_by(Book.book_id.desc())\
+                    .with_entities(Book.book_id,Book.title, Book.image_url)\
+                    .limit(5)
+
 # Turn result to list, unnest list and remove duplicate values. I got no clue how to get unique values from a array column through SQLalchemy :/
 unique_categories = set(sum([row for row, in unique_categories_query], []))
 
 @app.route('/')
 @app.route('/home')
 def index():
-    newest_books = Book.query.filter_by(publication_year = datetime.now().year)\
-                       .order_by(Book.book_id.desc())\
-                       .with_entities(Book.book_id,Book.title, Book.image_url)\
-                       .limit(5)
+    global newest_books
 
     best_rated_books = Book.query.filter(Book.average_rating > 4.8)\
                                  .order_by(Book.average_rating.desc() , func.random())\
@@ -59,19 +61,21 @@ def index():
 def book(page=1):
     global books
     global unique_categories
-
     filtered_books = books
-    for data in request.form:
-        if (data == "Toepassen"):
-            break
 
+    for data in request.form:
+        if (data == "Toepassen" or data == "Search"):
+            break
         filtered_books = books.filter(Book.categories.any(data))
 
+    if (request.form['Search'] != ""):
+        filtered_books = books.filter(Book.title.ilike("%" +request.form['Search'] + "%"))
+        
     per_page = 100
-
     paginated_books = filtered_books.paginate(page,per_page,error_out=False)
+
     return render_template(
-        'bookoverviewpage.html',
+        'book-list.html',
         title = 'Book Overview Page',
         year = datetime.now().year,
         books = paginated_books,
@@ -112,7 +116,7 @@ def bookdetail(book_id):
         sim_books = [next(s for s in sim_books if s.book_id == id) for id in id_list]
 
         return render_template(
-            'bookpage.html',
+            'book-detail.html',
             title = 'Book Detail Page',
             year = datetime.now().year,
             book = book,
