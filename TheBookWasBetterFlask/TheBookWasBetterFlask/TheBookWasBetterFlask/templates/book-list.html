@@ -3,6 +3,7 @@
 {% block content %}
 <div class="container body-content mx-0 px-0" style="max-width:none">
     <div class="row">
+        <!--Filters-->
         <div class="col-2">
             <div class="container-fluid">
                 <div class="row">
@@ -12,7 +13,8 @@
                             <h4 class="pt-2">Filters</h4>
                             {% for category in categories %}
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="true" id="{{category}}" name="{{category}}">
+                                <input class="form-check-input" type="checkbox" value="true" id="{{category}}"
+                                    name="{{category}}">
                                 <label class="form-check-label" for="{{category}}">
                                     {{category.capitalize()}}
                                 </label>
@@ -27,6 +29,19 @@
         </div>
 
         <div class="col-8">
+            <!--Search Bar-->
+            <div class="container-fluid">
+                <div class="d-flex justify-content-center">
+                    <form method="POST" action="./browse">
+                        <div class="form-group">
+                            <input name="Search" class="form-control" id="search" placeholder="Search"
+                                style="width: 300%; margin-left: -76px"> <!--I know forcing it like this is bad, but honestly, bootstrap fought with me.-->
+                            <input type="submit" style="visibility: hidden;">
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <div class="flex-grid">
                 {% for book in books.items %}
                 <a class="flex-row" href="{{ url_for('bookdetail', book_id=book.book_id) }}">
