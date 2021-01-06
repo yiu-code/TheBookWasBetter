@@ -25,7 +25,7 @@ def prep_data():
     # hardcover and book). After filtering we'll need the categories, titles and descriptions to continue.
     # Last line: Fill empty description with unknown instead of removing them.
     formats = ["1","2","9"]
-    df = pd.read_csv("dataset.csv")
+    df = pd.read_csv("C:/Users/ginad/Documents/#HR_2020_2021/Minor_DataScience/TheBookWasBetter/dataset/dataset.csv",encoding='utf-8')
     df = df[df.lang == "en"]
     df = df[df.format.isin(formats)]
     df = df.reset_index(drop=True)
@@ -74,7 +74,7 @@ def alter_categories_format(cat_list):
 
 def replace_categories_number_to_words(categories):
     # Make a dictionary of categories.csv (cat_dict)
-    df = pd.read_csv("categories.csv")
+    df = pd.read_csv("C:/Users/ginad/Documents/#HR_2020_2021/Minor_DataScience/TheBookWasBetter/dataset/categories.csv")
     cat_dict = df.set_index('category_id').to_dict()
     # Replace categorie values with categorie names
     index = 0    
@@ -115,13 +115,13 @@ def filter_data_on_categories(data, title, categories):
     for cat in categories:
         findData.append(data.index[data["Categories"].apply(lambda x: cat in x)])
     print(findData)
-    filteredData = pd.concat(findData)
-    print(filteredData)
-    return(filteredData)
+    #filteredData = pd.concat(findData)
+    #print(filteredData)
+    return(findData)
 
 
 def term_frequency_inverse_data_frequency(data):
-    tf = text.TfidfVectorizer(analyzer='word',ngram_range=(1, 2),min_df=0, stop_words='english')
+    tf = text.TfidfVectorizer(analyzer='word',min_df=0)
     tfidf_matrix = tf.fit_transform(data["cleaned_desc"])
     cosine = linear_kernel(tfidf_matrix, tfidf_matrix)
     print(cosine)
@@ -132,7 +132,7 @@ def getRecommendations(data, title, categories, cosine):
     scores = []
     titles = data["Title"]
     for single_cat in categories:
-        #scores = scores + list(enumerate(cosine[single_cat]))
+        scores = scores + list(enumerate(cosine[single_cat]))
         scores = scores + list(enumerate(cosine))
         scores = sorted(scores, key=lambda x: x[1], reverse=True)
         books = [i[0] for i in scores]
@@ -184,8 +184,8 @@ def main():
     #print(recommended.head(10))
 
     # COSINE WITH ALL THE DATA
-    #terms_cosine = term_frequency_inverse_data_frequency(data)
-    #recommended = getRecommendations(data, selection[0], selection[1], terms_cosine)
+    terms_cosine = term_frequency_inverse_data_frequency(data)
+    recommended = getRecommendations(data, selection[0], filtering, terms_cosine)
 
 
     #print(data.head())
