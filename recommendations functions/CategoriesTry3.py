@@ -77,6 +77,7 @@ def replace_categories_number_to_words(categories):
     df = pd.read_csv("C:/Users/ginad/Documents/#HR_2020_2021/Minor_DataScience/TheBookWasBetter/dataset/categories.csv")
     cat_dict = df.set_index('category_id').to_dict()
     # Replace categorie values with categorie names
+    print("Replacing category numbers to list of strings...")
     index = 0    
     for cat_list in categories:
         rep_val = []
@@ -84,6 +85,7 @@ def replace_categories_number_to_words(categories):
             rep_val.append(cat_dict['category_name'][cat])
         categories[index] = rep_val
         index += 1
+    print("Done")
     return categories
 
 
@@ -93,9 +95,11 @@ def single_book(data):
         50 Knitted Dolls
         Botanical Gazette (1897)
         Harry Potter and the Deathly Hallows
+        Make a Pop Rocket
     """
     found = 0
     select = str(input("Enter a book title: "))
+    print("Searching for title...")
     for lines in data["Title"]:
         if select in lines:
             categories_found = data["Categories"].loc[data["Title"] == select].values
@@ -112,35 +116,66 @@ def single_book(data):
 
 def filter_data_on_categories(data, title, categories):
     findData = []
-    finalData = []
     for cat in categories:
-        findData.append(data.index[data["Categories"].apply(lambda x: cat in x)])
-        #findData.append(data[data["Categories"].apply(lambda x: cat in x)])
-    print(findData)
-    for single_list in findData:
-        for single_cat in single_list:
-            finalData.append(single_cat)
-    finalData = set(finalData)
-    return(finalData)
+        findData.append(data[data["Categories"].apply(lambda x: cat in x)])
+    filteredData = pd.concat(findData)
+    filteredData = filteredData[filteredData["Title"] != title]
+    print(filteredData.shape)
+    return(filteredData)
 
 
-def term_frequency_inverse_data_frequency(data):
-    tf = text.TfidfVectorizer(analyzer='word',min_df=0)
-    tfidf_matrix = tf.fit_transform(data["Categories"])
-    cosine = linear_kernel(tfidf_matrix, tfidf_matrix)
-    print(cosine)
-    return(cosine)
+def train_vectorizer(bookCategories):
+    vectoriser = text.CountVectorizer().fit(bookCategories)
+    return(vectoriser, vectoriser.vocabulary_)
 
 
-def getRecommendations(data, title, categories, cosine):
-    scores = []
-    titles = data["Title"]
-    for single_cat in categories:
-        scores = scores + list(enumerate(cosine[single_cat]))
-        scores = scores + list(enumerate(cosine))
-        scores = sorted(scores, key=lambda x: x[1], reverse=True)
-        books = [i[0] for i in scores]
-    return titles.iloc[books][len(categories):]
+def vector_cosine(vector, compareList):
+    # Vectorise text and compute the cosine similarity
+    query0 = vector.transform([" ".join(vector.get_feature_names())])
+    query1 = vector.transform(compareList)
+    cos = cosine_similarity(query0.A, query1.A)
+    return(query1, np.round(cos.squeeze(), 3))
+
+
+def analyse_categories(filData, vector):
+    csList = []
+    for lines in filData["Categories"]:
+        line_vec, line_cos = vector_cosine(vector, [' '.join(lines)])
+        csList.append(line_cos)
+    filData["Cos_Sim"] = csList
+    return(filData)
+
+
+def add_title_to_categories_list(filData):
+    modified_data = []
+    cattle_data = filData[["Title", "Categories"]].values.tolist()
+    for combo in cattle_data:
+        flat_list = []
+        for item in combo:
+            if type(item) == str:
+                flat_list.append(item)
+            else:
+                for items in item:
+                    flat_list.append(items)
+        modified_data.append(flat_list)
+    filData["Categories&Title"] = modified_data
+    return(filData)
+    
+
+def adapt_single_book_data(title, categories):
+    single_book = [title]
+    for category in categories:
+        single_book.append(category)
+    return(single_book)
+
+
+def analyse_categories_title(filData, vector):
+    csList = []
+    for lines in filData["Categories&Title"]:
+        line_vec, line_cos = vector_cosine(vector, [' '.join(lines)])
+        csList.append(line_cos)
+    filData["cs_CT"] = csList
+    return(filData)
 
 
 def single_category(data):
@@ -162,6 +197,16 @@ def single_category(data):
 
 
 def main():
+    """
+    oefenlist = ["bla", "bla", "bla"]
+    print(oefenlist)
+    print(type(oefenlist))
+    oefenlist = str(oefenlist)
+    print(oefenlist)
+    print(type(oefenlist))
+    """
+
+
     sw = set_sw()
     data = prep_data()
     indices = pd.Series(data.index, index=data['Title'])
@@ -170,30 +215,25 @@ def main():
     # alter the str format of the values within categories
     data["Categories"] = data["Categories"].apply(alter_categories_format)
     # Replace category numbers (id's) with strings
-    #data["Categories"] = replace_categories_number_to_words(data["Categories"])
+    data["Categories"] = replace_categories_number_to_words(data["Categories"])
     
     # OM TE KIJKEN HOE VAAK EEN SINGLE CATEGORIE VOORKOMT
     #catSelection = single_category(data)
 
-    selection = single_book(data)
-    filtering = filter_data_on_categories(data, selection[0], selection[1])
-    #terms_cosine = term_frequency_inverse_data_frequency(filtering)
-    #recommended = getRecommendations(filtering, selection[0], selection[1], terms_cosine)
-    #print(recommended.head(10))
+    title, categories = single_book(data) # <-- title, categories
+    filtering = filter_data_on_categories(data, title, categories)  
+    train = train_vectorizer(categories)
+    analyse = analyse_categories(filtering, train[0])
+    print("\n\nRecommended based on categories:")
+    print(analyse.nlargest(10, "Cos_Sim"))
 
-    # COSINE WITH ALL THE DATA
-    #terms_cosine = term_frequency_inverse_data_frequency(data)
-    #recommended = getRecommendations(data, selection[0], filtering, terms_cosine)
-
-
-    #print(data.head())
-    #oefen = [data.loc[0, :], data.loc[1, :]]
-    #print(oefen[0])
-    #print(oefen[1]["Categories"])
-    #print(data.loc[0, :])
-    #print(data.loc[1, :])
-    #print(data["Categories"].value_counts().head())
-    
+    categories_and_title = add_title_to_categories_list(filtering)
+    single_book_data = adapt_single_book_data(title, categories)
+    train_cattle = train_vectorizer(single_book_data)
+    analyse_cattle = analyse_categories_title(filtering, train[0])
+    print("\n\nRecommended based on categories and title:")
+    print(analyse.nlargest(10, "cs_CT"))
+    print(filtering.columns)
 
 
 main()
