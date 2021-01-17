@@ -3,7 +3,7 @@ import numpy as np
 import warnings
 from pandas.core.common import SettingWithCopyWarning
 from sklearn.feature_extraction import text # for CountVectorizer
-from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 def prep_data():
