@@ -1,0 +1,3 @@
+Since there was now server avaialbe to train everyday on a given time.
+The Bert_Db_Integration is not converted to a py file. 
+But it contained the function call to improve the data. 
