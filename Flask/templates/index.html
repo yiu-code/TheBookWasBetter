@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid pt-3">
+    <div class="row">
+        <div class="col-3">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-4"></div>
+                    <div class="col-5">
+                        <h4 class="pt-2">Filters</h4>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="GenreCheck">
+                            <label class="form-check-label" for="GenreCheck">
+                            Genre
+                            </label>
+                        </div>
+                        <div class="pl-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="fantasyGenreCheck">
+                                <label class="form-check-label" for="fantasyGenreCheck">
+                                Fantasy
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="romanceGenreCheck">
+                                <label class="form-check-label" for="romanceGenreCheck">
+                                Romance
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="horrorGenreCheck">
+                                <label class="form-check-label" for="horrorGenreCheck">
+                                Horror
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="thrillerGenreCheck">
+                                <label class="form-check-label" for="thrillerGenreCheck">
+                                Thriller
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="crimeGenreCheck">
+                                <label class="form-check-label" for="crimeGenreCheck">
+                                Crime
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="cookingGenreCheck">
+                                <label class="form-check-label" for="cookingGenreCheck">
+                                Cooking
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <!--Recommend lijst-->
+            <div class="pt-2">
+                <h4>Books</h4>
+            </div>
+            <div class="pt-4">
+                <form>
+                    <div class="input-group">
+                        <input type="text" 
+                               name="recommendationSearch" 
+                               id="recommendationSearch" 
+                               placeholder="Search recommendations" 
+                               class="form-control" 
+                               style="min-width:100%">
+                    </div>
+                </form>
+            </div>
+
+            <div class="container pt-4">
+                <a href="detail" style="color:black">
+                    <div class="row pt-2">
+                        <div class="col-3" style="background-color: gray">
+                        </div>
+                        <div class="col-9">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                        </div>
+                    </div>
+                    <div class="row pt-4">
+                        <div class="col-3" style="background-color: gray">
+                        </div>
+                        <div class="col-9">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+        <div class="col-3">
+            <!--About Us-->
+            <h4 class="pt-2">About Us</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
